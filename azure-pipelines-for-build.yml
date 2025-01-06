@@ -1,0 +1,25 @@
+trigger:
+- none
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    azureSubscription: 'Azure Connection to Portal Subscription'
+    command: 'restore'
+    projects: '**/*.csproj'
+    feedsToUse: 'select'
+- task: DotNetCoreCLI@2
+  inputs:
+    azureSubscription: 'Azure Connection to Portal Subscription'
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration Release'
+- task: DotNetCoreCLI@2
+  inputs:
+    azureSubscription: 'Azure Connection to Portal Subscription'
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-c Release --output $Build.ArtifactStagingDirectory)'
