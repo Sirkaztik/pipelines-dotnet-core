@@ -1,6 +1,10 @@
 trigger:
 - none
 
+variables:
+  ProjectName: '**/*.csproj'
+  BuildConfiguration: 'Release'
+
 pool:
   vmImage: windows-latest
 
@@ -9,17 +13,17 @@ steps:
   inputs:
     azureSubscription: 'Azure Connection to Portal Subscription'
     command: 'restore'
-    projects: '**/*.csproj'
+    projects: $(ProjectName)
     feedsToUse: 'select'
 - task: DotNetCoreCLI@2
   inputs:
     azureSubscription: 'Azure Connection to Portal Subscription'
     command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration Release'
+    projects: $(ProjectName)
+    arguments: '--configuration $(BuildConfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
     azureSubscription: 'Azure Connection to Portal Subscription'
     command: 'publish'
     publishWebProjects: true
-    arguments: '-c Release --output $Build.ArtifactStagingDirectory)'
+    arguments: '-c $(BuildConfiguration) --output $Build.ArtifactStagingDirectory)'
